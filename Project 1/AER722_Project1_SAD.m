@@ -83,7 +83,8 @@ end
 
 n
 error
-qd1;
+qd1
+%bkjkjkj
 
 % Divergence Dynamic Pressure VS Mode Graph
 figure(1)
