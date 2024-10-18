@@ -81,17 +81,23 @@ for n = 1:10
     end
 end
 
+vpa(E, 3)
+vpa(K, 3)
+vpa(qd1(n), 3)
+
 % Divergence Dynamic Pressure VS Mode Graph
 figure(1)
 plot(1:n, qd1)
 title('Divergence Dynamic Pressure VS Mode')
 xlabel('Mode')
-ylabel('Divergence Dynamic Pressure')
+ylabel('Divergence Dynamic Pressure (Pa)')
 
 
 [qd1(n), E, K, F, theta] = div_p(n, y, s, GJ_eta, c, ec, cl_alpha, alpha_eta, (qd1(n)/2), 0);
 
-max_deflection = vpa(max(subs(theta, y, 2)), 4);
+vpa(F, 3)
+vpa(theta, 3)
+max_deflection = vpa(max(subs(theta, y, 2)), 4)
 
 %% Part B
 syms y k s eta
@@ -115,7 +121,7 @@ ec = c1-0.25*c;
 
 sc_ratio = s/c_mean;
 
-int(GJ_eta*c);
+int(GJ_eta*c) % Check this ma
 
 GJ_eta = 8500*(1-k*eta);
 
@@ -137,11 +143,11 @@ c = (111 * eta) / 200 + 3/4;
 
 [qd1, E, K, F, theta] = div_p(n, y, s, GJ_eta, c, ec, cl_alpha, alpha_eta, (qd1(n)/2), eta);
 
-max_deflection = vpa(max(subs(theta, y, s)), 4);
+max_deflection = vpa(max(subs(theta, y, s)), 4)
 
-V_div = sqrt((2*qd1)/rho);
+V_div = sqrt((2*qd1)/rho)
 
-M_bend = 0.5*L*(s/2);
+M_bend = 0.5*L*(s/2)
 
 %hahahahah hehehehe heheh tehehehehe bahahahahah
 
@@ -152,9 +158,9 @@ theta_values = double(subs(theta_total, y, y_values));
 
 figure(2)
 fplot(theta_total, [0 s])
-title('Twist Variation Distribution')
-xlabel('Y')
-ylabel('Twist (Theta)')
+title('Wing Twist Distribution')
+xlabel('Wing Span (m)')
+ylabel('Wing Twist (deg)')
 
 %% Part D
 syms y_values
@@ -166,10 +172,8 @@ alpha_values = (5 - 2*eta)*(pi/180);
 cl_alpha = fcl_alpha(eta);
 S = int(c, y, 0, s);
 
-max(theta_values);
-
-L = q*S*cl_alpha*(max(theta_values)-alpha_values);
-L_rigid = q*S*cl_alpha*max(theta_values);
+L = q*S*cl_alpha*(max(theta_values)-alpha_values)
+L_rigid = q*S*cl_alpha*max(theta_values)
 
 figure(3)
 hold on
@@ -177,29 +181,32 @@ fplot(L,[0 s])
 fplot(L_rigid,[0 s])
 hold off
 title('Lift Distribution')
-xlabel('Y')
-ylabel('Lift (L)')
+legend('Aeroelastic Wing', 'Rigid Wing')
+xlabel('Wing Span (m)')
+ylabel('Lift (N)')
 
 %% Part E
+% Double check that this is what to do
 L_total = int(L, y, 0, s);
 L_rigid_total = int(L_rigid, y, 0, s);
-PercentChangeInLift = (abs(L_total-L_rigid_total)/L_rigid_total)*100;
+PercentChangeInLift = (abs(L_total-L_rigid_total)/L_rigid_total)*100
 
 M_total = L_total*(1/3)*s;
 M_rigid_total = L_rigid_total*(1/3)*s;
-PercentChangeInMoment = (abs(M_total-M_rigid_total)/M_rigid_total)*100;
+PercentChangeInMoment = (abs(M_total-M_rigid_total)/M_rigid_total)*100
 
-M = L*y;
-M_rigid = L_rigid*y;
+M = L*y
+M_rigid = L_rigid*y
 
 figure(4)
 hold on
 fplot(M,[0 s])
 fplot(M_rigid,[0 s])
 hold off
-title('Moment Distribution')
-xlabel('Y')
-ylabel('Lift (M)')
+title('Bending Moment Distribution')
+legend('Aeroelastic Wing', 'Rigid Wing')
+xlabel('Wing Span (m)')
+ylabel('Moment (Nm)')
 
 %% Part F
 ca = 0.3*c;

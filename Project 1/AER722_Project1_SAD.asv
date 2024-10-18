@@ -81,6 +81,10 @@ for n = 1:10
     end
 end
 
+vpa(E, 3)
+vpa(K, 3)
+vpa(qd1(n), 3)
+
 % Divergence Dynamic Pressure VS Mode Graph
 figure(1)
 plot(1:n, qd1)
@@ -91,7 +95,9 @@ ylabel('Divergence Dynamic Pressure')
 
 [qd1(n), E, K, F, theta] = div_p(n, y, s, GJ_eta, c, ec, cl_alpha, alpha_eta, (qd1(n)/2), 0);
 
-max_deflection = vpa(max(subs(theta, y, 2)), 4);
+vpa(F, 3)
+vpa(theta, 3)
+max_deflection = vpa(max(subs(theta, y, 2)), 4)
 
 %% Part B
 syms y k s eta
@@ -152,9 +158,9 @@ theta_values = double(subs(theta_total, y, y_values));
 
 figure(2)
 fplot(theta_total, [0 s])
-title('Twist Variation Distribution')
-xlabel('Y')
-ylabel('Twist (Theta)')
+title('Wing Twist Distribution')
+xlabel('Wing Span (m)')
+ylabel('Wing Twist (deg)')
 
 %% Part D
 syms y_values
@@ -177,7 +183,8 @@ fplot(L,[0 s])
 fplot(L_rigid,[0 s])
 hold off
 title('Lift Distribution')
-xlabel('Y')
+legend('Aeroelastic Wing', 'Rigid Wing')
+xlabel('Wing Span (m)')
 ylabel('Lift (L)')
 
 %% Part E
@@ -197,8 +204,9 @@ hold on
 fplot(M,[0 s])
 fplot(M_rigid,[0 s])
 hold off
-title('Moment Distribution')
-xlabel('Y')
+title('Bending Moment Distribution')
+legend('Aeroelastic Wing', 'Rigid Wing')
+xlabel('Wing Span (m)')
 ylabel('Lift (M)')
 
 %% Part F
@@ -207,9 +215,9 @@ y1 = 0.5*s;
 y2 = 0.8*s;
 V = 70;
 
-phi = acos(2*ca-1);
-cl_beta = 2*(pi-phi+sin(phi));
-cm_beta = (-sin(phi)*(1-cos(phi)))/2;
+phi = acos(2*ca-1)
+cl_beta = 2*(pi-phi+sin(phi))
+cm_beta = (-sin(phi)*(1-cos(phi)))/2
 
 f = y*(4*s-2*y);
 f_prime = diff(f);
@@ -227,12 +235,12 @@ q = (A*E)/(A*D-B*C)
 rolling_power = V*(((A*(E/q)-D)+B*C)/(C*G+F*((E/q)-D)))
 
 %% Part G
-ca_sizes = [2*ca, 0.5*ca] % Larger, Smaller
+ca_sizes = [2*ca, 0.5*ca]; % Larger, Smaller
 
 phi = acos(2*ca_sizes-1)
 cl_beta = 2*(pi-phi+sin(phi))
 
-A = int(c*cl_beta*y, y, y1, y2)
-B = int((c^2)*(ec*cl_beta+cm_beta)*f, y, y1, y2)
+A = int(c*cl_beta*y, y, y1, y2);
+B = int((c^2)*(ec*cl_beta+cm_beta)*f, y, y1, y2);
 
 rolling_power_sizes = V*(((A*(E/q)-D)+B*C)/(C*G+F*((E/q)-D)))
