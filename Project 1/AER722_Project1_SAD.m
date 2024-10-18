@@ -177,3 +177,6 @@ M_bend = 0.5*L*(s/2)
 
 %hahahahah hehehehe heheh tehehehehe bahahahahah
 
+%% Part C
+
+
