@@ -101,3 +101,5 @@ ylabel('Divergence Dynamic Pressure')
 y_wt = 2;
 K = sqrt((0.5*qd1(n)*ec*(c^2)*cl_alpha)/GJ_eta)
 K = subs(K, y, 2)
+
+%jgjhghj
