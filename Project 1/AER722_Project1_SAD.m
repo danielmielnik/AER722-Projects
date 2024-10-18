@@ -180,31 +180,47 @@ M_bend = 0.5*L*(s/2)
 %% Part C
 y_values = 0:0.1:1.7;
 theta_total = theta(1,:)+theta(2,:)+theta(3,:)
+%theta_values = theta_total
 theta_values = double(subs(theta_total, y, y_values))
 
 figure(2)
-plot(y_values, theta_values)
+fplot(theta_total, [0 s])
+%plot(y_values, theta_values)
 title('Twist Variation Distribution')
 xlabel('Y')
 ylabel('Twist (Theta)')
 
 %% Part D
 y_values
-s
+%s = 1.8;
+%c1 = 0.18;
+%c = (1.5-0.75*y^2)*c1+c1;
+
+syms y_values
 
 q = 0.5*rho*(V^2)
 
-eta = feta(y_values, s)
-alpha_values = falpha_eta(eta)
+eta = feta(y, s)
+%alpha_values = falpha_eta(eta)
+alpha_values = (5 - 2*eta)*(pi/180)
 cl_alpha = fcl_alpha(eta)
-c = slope*y_values + (c1 + c2)
-S = int(c, y, 0, s);
+%c = slope*y_values + (c1 + c2)
+S = int(c, y, 0, s)
 
-L = q.*S.*cl_alpha.*(theta_values-alpha_values)
-L_rigid = q.*S.*cl_alpha.*theta_values
+max(theta_values)
+alpha_values
+
+L = q*S*cl_alpha*(max(theta_values)-alpha_values)
+L_rigid = q*S*cl_alpha*max(theta_values)
 
 figure(3)
-plot(y_values, L, y_values, L_rigid)
+hold on
+%plot(y_values, L, y_values, L_rigid)
+fplot(L,[0 s])
+fplot(L_rigid,[0 s])
+hold off
 title('Lift Distribution')
 xlabel('Y')
 ylabel('Lift (L)')
+
+%% Part E
