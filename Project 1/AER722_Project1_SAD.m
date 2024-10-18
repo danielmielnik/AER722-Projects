@@ -251,10 +251,12 @@ y1 = 0.5*s;
 y2 = 0.8*s;
 V = 70;
 
-cl_beta = 1
-%ec = 
+phi = acos(2*ca-1)
+cl_beta = 2*(pi-phi+sin(phi))
+ec = ec
 
 f = y*(4*s-2*y)
+%f = y*(2-y)
 f_prime = diff(f)
 
 A = int(c*cl_beta*y, y, y1, y2)
@@ -268,3 +270,5 @@ G = int((c^2)*ec*cl_alpha*f*y, y, 0, s)
 q = (A*E)/(A*D-B*C)
 
 rolling_power = V*(((A*(E/q)-D)+B*C)/(C*G+F*((E/q)-D)))
+
+%% Part G
