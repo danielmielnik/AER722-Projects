@@ -5,7 +5,7 @@ clc;
 
 syms y
 
-% Constants
+%% Constants
 function eta = feta(y, s)
     eta = y/s;
 end
@@ -26,10 +26,10 @@ function error = ferror(q1, q2)
     error = ((q1 - q2)/q1)*100;
 end
 
-function qd = div_p(n, y, s, GJ_eta, c, ec, cl_alpha, alpha)
+function [qd, E, K, theta] = div_p(n, y, s, GJ_eta, c, ec, cl_alpha, alpha, q)
     for i = 1:n
-        fi = i*(y^i);
-        fi_prime = diff(fi);
+        fi(i,:) = i*(y^i);
+        fi_prime = diff(fi(i,:));
         for j = 1:n
             fj = j*(y^j);
             fj_prime = diff(fj);
@@ -37,26 +37,35 @@ function qd = div_p(n, y, s, GJ_eta, c, ec, cl_alpha, alpha)
             E_ij(y) = GJ_eta*fi_prime*fj_prime;
             E(i,j) = int(E_ij,0,s);
             
-            K_ij(y) = -((c^2)*ec*cl_alpha*(fi*fj));
+            K_ij(y) = -((c^2)*ec*cl_alpha*(fi(i,:)*fj));
             K(i,j) = int(K_ij, 0, s);
         end
-        F(i,j) = q*int((c^2)*ec*cl_alpha*alpha*fi, 0, s);
-        theta = inv(E(i,j)+q*K(i,j))*F(i,:)
+        F(i,:) = q*int((c^2)*ec*cl_alpha*alpha*fi(i,:), 0, s);
+        %theta(i,:) = ((E(i,j)+q*K(i,j))^-1)*q*F(i,:);
+        theta(i,:) = sum((((E(1:i,1:i)+q*K(1:i,1:i))^-1)*F(1:i,:)).*fi(1:i,:)); 
         
 
     end
-    
+   
     vpa(E);
     vpa(K);
     
     qd = -eig(double(E),double(K));
     qd = min(qd);
+
+    
+
+    E = E(n, n);
+    K = K(n, n);
+    theta;
+
 end
 
 cl_beta = 0;
 cm_beta = 0;
+rho = 1.225;
 
-% Part A:
+%% Part A:
 % Constants
 k = 0.25;
 c1 = 0.35;
@@ -77,8 +86,8 @@ c(y) = slope*y + (c1 + c2)
 ec = c1-0.25*c
 
 for n = 1:10
-    qd1(n) = div_p(n, y, s, GJ_eta, c, ec, cl_alpha, alpha_eta);
-    qd2 = div_p(n+1, y, s, GJ_eta, c, ec, cl_alpha, alpha_eta);
+    [qd1(n), E, K, fi] = div_p(n, y, s, GJ_eta, c, ec, cl_alpha, alpha_eta, 0);
+    qd2 = div_p(n+1, y, s, GJ_eta, c, ec, cl_alpha, alpha_eta, 0);
     
     error = ferror(qd1(n), qd2);
     if error <= 0.1
@@ -89,7 +98,6 @@ end
 n
 error
 qd1
-%bkjkjkj
 
 % Divergence Dynamic Pressure VS Mode Graph
 figure(1)
@@ -98,8 +106,41 @@ title('Divergence Dynamic Pressure VS Mode')
 xlabel('Mode')
 ylabel('Divergence Dynamic Pressure')
 
-y_wt = 2;
-K = sqrt((0.5*qd1(n)*ec*(c^2)*cl_alpha)/GJ_eta)
-K = subs(K, y, 2)
 
-%jgjhghj
+[qd1(n), E, K, theta] = div_p(n, y, s, GJ_eta, c, ec, cl_alpha, alpha_eta, (qd1(n)/2));
+
+max_deflection = vpa(max(subs(theta, y, 2)), 4)
+
+%% Part B
+L = 700;
+V = 70;
+%s/c > 3;
+%maxdeflection < 1 deg
+M_max = 300;
+V_div = 150;
+
+syms k s eta c1 c2
+
+c_mean = ((c1+c2)+(c1+c1/2))/2
+
+slope = ((c1/2)-c2)/(s-0)
+c(y) = slope*y + (c1 + c2)
+
+ec = c1-0.25*c
+
+sc_ratio = s/c_mean
+
+int(GJ_eta*c)
+
+GJ_eta = 8500*(1-k*eta);
+
+c = subs(c, y, s*eta)
+
+int(GJ_eta*c, eta, 0, 1)
+
+cl_want = 700/(0.5*rho*(V^2)*s)
+
+vpa(solve(2*pi*sqrt(1-eta^2) == cl_want,eta))
+
+hahahahah hehehehe heheh tehehehehe bahahahahah
+
