@@ -26,7 +26,7 @@ function error = ferror(q1, q2)
     error = ((q1 - q2)/q1)*100;
 end
 
-function [qd, E, K, theta] = div_p(n, y, s, GJ_eta, c, ec, cl_alpha, alpha, q)
+function [qd, E, K, theta] = div_p(n, y, s, GJ_eta, c, ec, cl_alpha, alpha, q, eta)
     for i = 1:n
         fi(i,:) = i*(y^i);
         fi_prime = diff(fi(i,:));
@@ -47,9 +47,12 @@ function [qd, E, K, theta] = div_p(n, y, s, GJ_eta, c, ec, cl_alpha, alpha, q)
 
     end
    
-    vpa(E);
-    vpa(K);
+    vpa(E)
+    vpa(K)
+    subs(K, eta, 1)
+    K_numeric = double(subs(K, eta, 1))
     
+    %qd = -eig(double(E),double(K));
     qd = -eig(double(E),double(K));
     qd = min(qd);
 
@@ -80,14 +83,14 @@ alpha_eta = falpha_eta(eta)
 
 n = 3;
 
-slope = ((c1/2)-c2)/(s-0)
+slope = ((c1/2)-c2)/(s-0)+c2
 c(y) = slope*y + (c1 + c2)
 
 ec = c1-0.25*c
 
 for n = 1:10
-    [qd1(n), E, K, fi] = div_p(n, y, s, GJ_eta, c, ec, cl_alpha, alpha_eta, 0);
-    qd2 = div_p(n+1, y, s, GJ_eta, c, ec, cl_alpha, alpha_eta, 0);
+    [qd1(n), E, K, fi] = div_p(n, y, s, GJ_eta, c, ec, cl_alpha, alpha_eta, 0, 0);
+    qd2 = div_p(n+1, y, s, GJ_eta, c, ec, cl_alpha, alpha_eta, 0, 0);
     
     error = ferror(qd1(n), qd2);
     if error <= 0.1
@@ -107,7 +110,7 @@ xlabel('Mode')
 ylabel('Divergence Dynamic Pressure')
 
 
-[qd1(n), E, K, theta] = div_p(n, y, s, GJ_eta, c, ec, cl_alpha, alpha_eta, (qd1(n)/2));
+[qd1(n), E, K, theta] = div_p(n, y, s, GJ_eta, c, ec, cl_alpha, alpha_eta, (qd1(n)/2), 0);
 
 max_deflection = vpa(max(subs(theta, y, 2)), 4)
 
@@ -119,11 +122,14 @@ V = 70;
 M_max = 300;
 V_div = 150;
 
-syms k s eta c1 c2
+syms y k s eta
+
+s = 1.95;
+k = 0.8;
 
 c_mean = ((c1+c2)+(c1+c1/2))/2
 
-slope = ((c1/2)-c2)/(s-0)
+slope = ((c1/2)-c2)/(s-0)+c2
 c(y) = slope*y + (c1 + c2)
 
 ec = c1-0.25*c
@@ -136,11 +142,21 @@ GJ_eta = 8500*(1-k*eta);
 
 c = subs(c, y, s*eta)
 
-int(GJ_eta*c, eta, 0, 1)
+w_req = vpa(int(GJ_eta*c, eta, 0, 1))
 
 cl_want = 700/(0.5*rho*(V^2)*s)
 
-vpa(solve(2*pi*sqrt(1-eta^2) == cl_want,eta))
+eta = max(vpa(solve(2*pi*sqrt(1-eta^2) == cl_want,eta)))
 
-hahahahah hehehehe heheh tehehehehe bahahahahah
+GJ_eta = 8500*(1-k*eta);
+
+cl_alpha = 2*pi*sqrt(1-eta^2)
+
+alpha_eta = 5-3*eta;
+
+[qd1(n), E, K, theta] = div_p(n, y, s, GJ_eta, c, ec, cl_alpha, alpha_eta, (qd1(n)/2), eta);
+
+max_deflection = vpa(max(subs(theta, y, 2)), 4)
+
+%hahahahah hehehehe heheh tehehehehe bahahahahah
 

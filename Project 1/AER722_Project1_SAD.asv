@@ -50,6 +50,7 @@ function [qd, E, K, theta] = div_p(n, y, s, GJ_eta, c, ec, cl_alpha, alpha, q)
     vpa(E);
     vpa(K);
     
+    %qd = -eig(double(E),double(K));
     qd = -eig(double(E),double(K));
     qd = min(qd);
 
@@ -63,6 +64,7 @@ end
 
 cl_beta = 0;
 cm_beta = 0;
+rho = 1.225;
 
 %% Part A:
 % Constants
@@ -79,7 +81,7 @@ alpha_eta = falpha_eta(eta)
 
 n = 3;
 
-slope = ((c1/2)-c2)/(s-0)
+slope = ((c1/2)-c2)/(s-0)+c2
 c(y) = slope*y + (c1 + c2)
 
 ec = c1-0.25*c
@@ -118,9 +120,17 @@ V = 70;
 M_max = 300;
 V_div = 150;
 
-syms k s eta 
+syms k s eta
+
+s = 1.95;
+k = 0.8;
 
 c_mean = ((c1+c2)+(c1+c1/2))/2
+
+slope = ((c1/2)-c2)/(s-0)+c2
+c(y) = slope*y + (c1 + c2)
+
+ec = c1-0.25*c
 
 sc_ratio = s/c_mean
 
@@ -130,5 +140,21 @@ GJ_eta = 8500*(1-k*eta);
 
 c = subs(c, y, s*eta)
 
-int(GJ_eta*c, eta, 0, 1)
+w_req = vpa(int(GJ_eta*c, eta, 0, 1))
+
+cl_want = 700/(0.5*rho*(V^2)*s)
+
+eta = max(vpa(solve(2*pi*sqrt(1-eta^2) == cl_want,eta)))
+
+GJ_eta = 8500*(1-k*eta);
+
+cl_alpha = 2*pi*sqrt(1-eta^2)
+
+alpha_eta = 5-3*eta;
+
+[qd1(n), E, K, theta] = div_p(n, y, s, GJ_eta, c, ec, cl_alpha, alpha_eta, (qd1(n)/2));
+
+max_deflection = vpa(max(subs(theta, y, 2)), 4)
+
+%hahahahah hehehehe heheh tehehehehe bahahahahah
 
