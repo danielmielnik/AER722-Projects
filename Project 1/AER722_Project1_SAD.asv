@@ -224,4 +224,27 @@ xlabel('Y')
 ylabel('Lift (L)')
 
 %% Part E
-L_total = int
+L_total = int(L, y, 0, s)
+L_rigid_total = int(L_rigid, y, 0, s)
+PercentChangeInLift = (abs(L_total-L_rigid_total)/L_rigid_total)*100
+
+M_total = L_total*(1/3)*s
+M_rigid_total = L_rigid_total*(1/3)*s
+PercentChangeInMoment = (abs(M_total-M_rigid_total)/M_rigid_total)*100
+
+M = L*y
+M_rigid = L_rigid*y
+
+figure(4)
+hold on
+%plot(y_values, L, y_values, L_rigid)
+fplot(M,[0 s])
+fplot(M_rigid,[0 s])
+hold off
+title('Moment Distribution')
+xlabel('Y')
+ylabel('Lift (M)')
+
+%% Part F
+ca = 0.3*c
+y1 = 

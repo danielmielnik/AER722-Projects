@@ -246,3 +246,25 @@ xlabel('Y')
 ylabel('Lift (M)')
 
 %% Part F
+ca = 0.3*c;
+y1 = 0.5*s;
+y2 = 0.8*s;
+V = 70;
+
+cl_beta = 1
+%ec = 
+
+f = y*(4*s-2*y)
+f_prime = diff(f)
+
+A = int(c*cl_beta*y, y, y1, y2)
+B = int((c^2)*(ec*cl_beta+cm_beta)*f, y, y1, y2)
+C = int(c*cl_alpha*f*y, y, 0, s)
+D = int((c^2)*ec*cl_alpha*f*f, y, 0, s)
+E = int(GJ_eta*f_prime*f_prime, y, 0, s)
+F = int(c*cl_alpha*(y^2), y, 0, s)
+G = int((c^2)*ec*cl_alpha*f*y, y, 0, s)
+
+q = (A*E)/(A*D-B*C)
+
+rolling_power = V*(((A*(E/q)-D)+B*C)/(C*G+F*((E/q)-D)))
