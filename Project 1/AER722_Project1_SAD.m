@@ -44,6 +44,10 @@ function [qd, E, K, theta] = div_p(n, y, s, GJ_eta, c, ec, cl_alpha, alpha, q, e
         %theta(i,:) = ((E(i,j)+q*K(i,j))^-1)*q*F(i,:);
         theta(i,:) = sum((((E(1:i,1:i)+q*K(1:i,1:i))^-1)*F(1:i,:)).*fi(1:i,:)); 
         
+        c
+        GJ_eta
+        ec
+        cl_alpha
 
     end
    
@@ -124,8 +128,11 @@ V_div = 150;
 
 syms y k s eta
 
-s = 1.95;
+s = 1.7;
 k = 0.8;
+
+c1 = 0.3;
+c2 = 0.375;
 
 c_mean = ((c1+c2)+(c1+c1/2))/2
 
@@ -154,9 +161,19 @@ cl_alpha = 2*pi*sqrt(1-eta^2)
 
 alpha_eta = 5-3*eta;
 
-[qd1(n), E, K, theta] = div_p(n, y, s, GJ_eta, c, ec, cl_alpha, alpha_eta, (qd1(n)/2), eta);
+c = (111 * eta) / 200 + 3/4;
+
+%c = double(subs(c, eta, 1))
+
+[qd1, E, K, theta] = div_p(n, y, s, GJ_eta, c, ec, cl_alpha, alpha_eta, (qd1(n)/2), eta);
 
 max_deflection = vpa(max(subs(theta, y, 2)), 4)
+
+V_div = sqrt((2*qd1)/rho)
+
+M_bend = 0.5*L*(s/2)
+
+%M_bend = 
 
 %hahahahah hehehehe heheh tehehehehe bahahahahah
 
