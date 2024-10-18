@@ -256,7 +256,6 @@ cl_beta = 2*(pi-phi+sin(phi))
 ec = ec
 
 f = y*(4*s-2*y)
-%f = y*(2-y)
 f_prime = diff(f)
 
 A = int(c*cl_beta*y, y, y1, y2)
@@ -272,3 +271,12 @@ q = (A*E)/(A*D-B*C)
 rolling_power = V*(((A*(E/q)-D)+B*C)/(C*G+F*((E/q)-D)))
 
 %% Part G
+ca_sizes = [2*ca, 0.5*ca] % Larger, Smaller
+
+phi = acos(2*ca_sizes-1)
+cl_beta = 2*(pi-phi+sin(phi))
+
+A = int(c*cl_beta*y, y, y1, y2)
+B = int((c^2)*(ec*cl_beta+cm_beta)*f, y, y1, y2)
+
+rolling_power_sizes = V*(((A*(E/q)-D)+B*C)/(C*G+F*((E/q)-D)))
