@@ -11,11 +11,11 @@ function eta = feta(y, s)
 end
 
 function alpha_eta = falpha_eta(eta)
-    alpha_eta = 5-3*eta;
+    alpha_eta = (5-3*eta)*(pi/180);
 end
 
 function cl_alpha = fcl_alpha(eta)
-    cl_alpha = 2*pi*sqrt(1-eta^2);
+    cl_alpha = 2*pi*sqrt(1-eta.^2);
 end
 
 function GJ_eta = fGJ_eta(k, eta)
@@ -44,17 +44,17 @@ function [qd, E, K, theta] = div_p(n, y, s, GJ_eta, c, ec, cl_alpha, alpha, q, e
         %theta(i,:) = ((E(i,j)+q*K(i,j))^-1)*q*F(i,:);
         theta(i,:) = sum((((E(1:i,1:i)+q*K(1:i,1:i))^-1)*F(1:i,:)).*fi(1:i,:)); 
         
-        c
-        GJ_eta
-        ec
-        cl_alpha
+        c;
+        GJ_eta;
+        ec;
+        cl_alpha;
 
     end
    
-    vpa(E)
-    vpa(K)
-    subs(K, eta, 1)
-    K_numeric = double(subs(K, eta, 1))
+    vpa(E);
+    vpa(K);
+    subs(K, eta, 1);
+    K_numeric = double(subs(K, eta, 1));
     
     %qd = -eig(double(E),double(K));
     qd = -eig(double(E),double(K));
@@ -167,19 +167,44 @@ c = (111 * eta) / 200 + 3/4;
 
 [qd1, E, K, theta] = div_p(n, y, s, GJ_eta, c, ec, cl_alpha, alpha_eta, (qd1(n)/2), eta);
 
-max_deflection = vpa(max(subs(theta, y, 2)), 4)
+theta
+
+max_deflection = vpa(max(subs(theta, y, s)), 4)
 
 V_div = sqrt((2*qd1)/rho)
 
 M_bend = 0.5*L*(s/2)
 
-%M_bend = 
-
 %hahahahah hehehehe heheh tehehehehe bahahahahah
 
 %% Part C
-syms y
+y_values = 0:0.1:1.7;
+theta_total = theta(1,:)+theta(2,:)+theta(3,:)
+theta_values = double(subs(theta_total, y, y_values))
 
-[qd1, E, K, theta] = div_p(n, y, s, GJ_eta, c, ec, cl_alpha, alpha_eta, (qd1), eta);
+figure(2)
+plot(y_values, theta_values)
+title('Twist Variation Distribution')
+xlabel('Y')
+ylabel('Twist (Theta)')
 
+%% Part D
+y_values
+s
 
+q = 0.5*rho*(V^2)
+
+eta = feta(y_values, s)
+alpha_values = falpha_eta(eta)
+cl_alpha = fcl_alpha(eta)
+c = slope*y_values + (c1 + c2)
+S = int(c, y, 0, s);
+
+L = q.*S.*cl_alpha.*(theta_values-alpha_values)
+L_rigid = q.*S.*cl_alpha.*theta_values
+
+figure(3)
+plot(y_values, L, y_values, L_rigid)
+title('Lift Distribution')
+xlabel('Y')
+ylabel('Lift (L)')
