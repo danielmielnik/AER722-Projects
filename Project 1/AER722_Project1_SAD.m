@@ -178,5 +178,8 @@ M_bend = 0.5*L*(s/2)
 %hahahahah hehehehe heheh tehehehehe bahahahahah
 
 %% Part C
+syms y
+
+[qd1, E, K, theta] = div_p(n, y, s, GJ_eta, c, ec, cl_alpha, alpha_eta, (qd1), eta);
 
 
