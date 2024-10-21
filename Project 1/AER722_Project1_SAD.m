@@ -97,7 +97,8 @@ ylabel('Divergence Dynamic Pressure (Pa)')
 
 vpa(F, 3)
 vpa(theta, 3)
-max_deflection = vpa(max(subs(theta, y, 2)), 4)
+theta_total = theta(1,:)+theta(2,:)+theta(3,:)
+max_deflection = double(subs(theta_total, y, 2))
 
 %% Part B
 syms y k s eta
@@ -116,27 +117,24 @@ c_mean = ((c1+c2)+(c1+c1/2))/2;
 
 slope = ((c1/2)-c2)/(s-0)+c2;
 c(y) = slope*y + (c1 + c2);
-
 ec = c1-0.25*c;
-
 sc_ratio = s/c_mean;
 
-int(GJ_eta*c) % Check this ma
+S = int(c, y, 0, s);
 
+vpa(int(int(GJ_eta*c, eta, 0, 1), y, 0, s)) % Check this ma
 GJ_eta = 8500*(1-k*eta);
 
 c = subs(c, y, s*eta);
 
 w_req = vpa(int(GJ_eta*c, eta, 0, 1));
 
-cl_want = 700/(0.5*rho*(V^2)*s);
+cl_want = 700/(0.5*rho*(V^2)*S);
 
 eta = max(vpa(solve(2*pi*sqrt(1-eta^2) == cl_want,eta)));
-
 GJ_eta = 8500*(1-k*eta);
 
 cl_alpha = 2*pi*sqrt(1-eta^2);
-
 alpha_eta = 5-3*eta;
 
 c = (111 * eta) / 200 + 3/4;
