@@ -184,13 +184,12 @@ xlabel('Wing Span (m)')
 ylabel('Lift (N)')
 
 %% Part E
-% Double check that this is what to do
-L_total = int(L, y, 0, s);
-L_rigid_total = int(L_rigid, y, 0, s);
+L_total = int(L, y, 0, s)
+L_rigid_total = int(L_rigid, y, 0, s)
 PercentChangeInLift = (abs(L_total-L_rigid_total)/L_rigid_total)*100
 
-M_total = L_total*(1/3)*s;
-M_rigid_total = L_rigid_total*(1/3)*s;
+M_total = L_total*(1/3)*s
+M_rigid_total = L_rigid_total*(1/3)*s
 PercentChangeInMoment = (abs(M_total-M_rigid_total)/M_rigid_total)*100
 
 M = L*y
