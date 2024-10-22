@@ -142,6 +142,8 @@ c = (111 * eta) / 200 + 3/4;
 
 [qd1, E, K, F, theta] = div_p(n, y, s, GJ_eta, c, ec, cl_alpha, alpha_eta, (qd1(n)/2), eta);
 
+qd1
+
 theta_total = vpa(theta(1,:)+theta(2,:)+theta(3,:)+theta(4,:))
 max_deflection = vpa(subs(theta_total, y, s), 4)
 
@@ -170,11 +172,8 @@ alpha_values = (5 - 2*eta)*(pi/180);
 cl_alpha = fcl_alpha(eta);
 S = int(c, y, 0, s);
 
-L = q*S*cl_alpha*(max(theta_values)-alpha_values);
-L_rigid = q*S*cl_alpha*max(theta_values);
-
-vpa(L)
-vpa(L_rigid)
+L = q*S*cl_alpha*(max(theta_values)-alpha_values)
+L_rigid = q*S*cl_alpha*max(theta_values)
 
 figure(3)
 hold on
@@ -223,6 +222,7 @@ f_prime = diff(f);
 
 A = int(c*cl_beta*y, y, y1, y2);
 B = int((c^2)*(ec*cl_beta+cm_beta)*f, y, y1, y2);
+B = int((c*ec*cl_beta+c^2*cm_beta)*f, y, y1, y2);
 C = int(c*cl_alpha*f*y, y, 0, s);
 D = int((c^2)*ec*cl_alpha*f*f, y, 0, s);
 E = int(GJ_eta*f_prime*f_prime, y, 0, s);
