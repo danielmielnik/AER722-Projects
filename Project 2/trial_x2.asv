@@ -37,12 +37,11 @@ Kb=2*pi*(0.5*rho*U^2)*s*c*Kv
 Z=zeros([2,2])
 %Z=[1, 1; 1, 1]
 
-B_bar = pi*rho*s*c*Bsv + pi*rho*s*c*Bab
-%B_bar = pi*rho*s*c(Bsv + Bab)
-K_bar = pi*rho*s*Kb
+B_bar = pi*rho*s*c(Bsv + Bab)
+K_bar = pi*rho*s*cKb
 
 A = [Mv, U*B_bar; Z, Mv]
-C = [Z, (Ev+U^2*K_bar); -Mv, Z]
+C = [Z, (Ev+U^2*K_bar); -Mv, 0]
 
 
 B=Bsv +Bab*U
