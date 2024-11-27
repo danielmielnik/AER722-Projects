@@ -77,7 +77,7 @@ C=[Z,EK;-Mv, Z]
 Cvar=double(subs(C,U,100))
 EigenVal=eig(Cvar,-Avar)
 if(EigenVal>0) 
-    f= 4
+    f = 4
 end
 
 Charmatr=[(M(1,1)*lambda^2+(B_s(1,1)+U*B_bar_a(1,1))*lambda+E(1,1)), (M(1,2)*lambda^2+(B_s(1,2)+U*B_bar_a(1,2))*lambda+E(1,2)+U^2*K_bar_(1,2)); (M(2,1)*lambda^2+(B_s(2,1)+U*B_bar_a(2,1))*lambda+E(2,1)), (M(2,2)*lambda^2+(B_s(2,2)+U*B_bar_a(2,2))*lambda+E(2,2)+U^2*K_bar_(2,2))]
@@ -91,7 +91,7 @@ coll=collect(CharEqn,lambda)
 
 %CharEqnP = subs(coll,[k1, k2,k_theta],[5000,1000,500])
 
-Coef=vpa(fliplr(coeffs((CharEqn),lambda)),4);
+Coef=vpa(fliplr(coeffs((CharEqn),lambda)),4)
 P4 = vpa(Coef(1,1),3);
 P3 = vpa(Coef(1,2),3);
 P2= vpa(Coef(1,3),3);

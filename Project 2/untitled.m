@@ -8,11 +8,11 @@ k_1 = 5; % kN/m
 k_theta1 = 500; % Nm/rad
 k_2 = 1; % kN/m
 c_theta1 = 0; % Nms/rad
-c_2 = 0; % Ns/m
+c2 = 0; % Ns/m
 m = 5; % kg
 I_CG = 0.05; % kgm^2
 x_g = 0.15; % m
-m_1 = 2; % kg
+m1 = 2; % kg
 x_m = 0.15; % m
 U_max = 100; % m/s
 rho = 1.225; % kg/m^3
@@ -64,18 +64,19 @@ end
 
 U_est = U_est + 100;
 
-fu = 2*pi*0.5*S*c;
+fu = 2*pi*0.5*U^2*S*c;
 
-M = [m+m_1, m*(x_g-b)+m_1*x_m; m*(x_g-b)+m_1*x_m, m*(x_g-b)^2+m_1*x_m^2+I_CG];
+M = [m+m1, m*(x_g-b)-m1*(b-x_m); m*(x_g-b)-m1*(b-x_m), m*(x_g-b)^2+m1*(b-x_m)^2+I_CG];
 
-B_s = [c_2, c_2*(b/2); c_2*(b/2), c_2*(b/2)^2];
-B_a = [1, b/2; 0, (b/2)^2];
-B_bar = B_s + U*fu*B_a;
+B_s = [c2, c2*(b/2); c2*(b/2), c2*(b/2)^2+c_theta1];
+B_a = [1, b/2; -b/2, 0];
+B_bar = pi*rho*S*c*(B_s + (fu/U)*U*B_a);
 
-E = [k_1+k_2, k_2*(b/2)-k_1*b; k_2*(b/2)-k_1*b, k_2*(b/2)^2-k_1*b^2];
+E = [(k1+k2), k2*(b/2)-k1*b; k2*(b/2)-k1*b, k2*(b/2)^2+k1*b^2+k_theta1];
 
-K = [0, 1; 0, 0];
-K_bar = U^2*fu*K;
+K = [0, 1; 0, -b/2];
+K_bar = fu*pi*rho*S*c*U^2*K;
+K_bar = [0,0;0,0]
 
 J = [0, 0; 0, 0];
 
@@ -102,15 +103,15 @@ coll=collect(CharEqn,lambda)
 %syms U y
 eqn = M*y^2 + B_bar*y + K_bar*U^2 + E;
 
-%cf = coeffs(collect(det(eqn), y), y);
-cf = vpa(fliplr(coeffs((CharEqn),lambda)),4);
-p0 = cf(1,1)
-p1 = cf(1,2)
-p2 = cf(1,3)
-p3 = cf(1,4)
-p4 = cf(1,5)
+cf = coeffs(collect(det(eqn), y), y)
+%cf = vpa(fliplr(coeffs((CharEqn),lambda)),4)
+P4 = vpa(cf(1,1),3);
+P3 = vpa(cf(1,2),3);
+P2 = vpa(cf(1,3),3);
+P1 = vpa(cf(1,4),3)
+P0 = vpa(cf(1,5),3)
 
 T3 = vpa(solve(p1*p2*p3 - p1^2*p4 - p0*p3^2 == 0, U),3)
-P0 = vpa(solve(p0 == 0, U), 3);
+P0 = vpa(solve(p0 == 0, U), 3)
 Flutter = vpa(min(T3(T3>0)),5)
 Divergence = vpa(min(P0(P0>0)),5)
