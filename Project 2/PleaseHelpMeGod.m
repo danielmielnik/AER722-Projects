@@ -48,23 +48,11 @@ Csub = double(subs(C, U, U_max));
 
 eigenVal = eig(Csub, -Asub);
 
-%CharMatrix = [M(1,1)*lambda^2+U*B_bar(1,1)*lambda+E(1,1), M(1,2)*lambda^2+U*B_bar(1,2)*lambda+U^2*K(1,2); M(2,1)*lambda^2+U*B_bar(2,1)*lambda, M(2,2)*lambda^2+U*B_bar(2,2)*lambda+U^2*K_bar(2,2)+k_theta1]
 CharMatrix = [(M(1,1)*lambda^2+(B_s(1,1)+U*B_bar_a(1,1))*lambda+E(1,1)), (M(1,2)*lambda^2+(B_s(1,2)+U*B_bar_a(1,2))*lambda+E(1,2)+U^2*Kb(1,2)); (M(2,1)*lambda^2+(B_s(2,1)+U*B_bar_a(2,1))*lambda+E(2,1)), (M(2,2)*lambda^2+(B_s(2,2)+U*B_bar_a(2,2))*lambda+E(2,2)+U^2*Kb(2,2))];
-
-%syms Mv Ev B_sv B_av Kv B_bar_av K_bar_v [2 2]
-%Charmatr=[(Mv(1,1)*lambda^2+(B_sv(1,1)+U*B_bar_av(1,1))*lambda+Ev(1,1)), (Mv(1,2)*lambda^2+(B_sv(1,2)+U*B_bar_av(1,2))*lambda+Ev(1,2)+U^2*K_bar_v(1,2)); (Mv(2,1)*lambda^2+(B_sv(2,1)+U*B_bar_av(2,1))*lambda+Ev(2,1)), (Mv(2,2)*lambda^2+(B_sv(2,2)+U*B_bar_av(2,2))*lambda+Ev(2,2)+U^2*K_bar_v(2,2))]
-%CharMatrix=subs(Charmatr,[Mv(:,:),Ev(:,:), B_sv(:,:), B_av(:,:), Kv(:,:), B_bar_av(:,:), K_bar_v(:,:)], [M(:,:), E(:,:), B_s(:,:), B_a(:,:), K(:,:), B_a_bar(:,:), Kb(:,:)])
-
 CharEqn = det(CharMatrix);
-
 eigCollect = collect(CharEqn, lambda);
 
-%cf = fliplr(coeffs(eigCollect))
-
-%cf = coeffs(eigCollect)
-
 Cf = vpa(fliplr(coeffs((CharEqn),lambda)),4);
-
 p0 = Cf(1);
 p1 = Cf(2);
 p2 = Cf(3);
@@ -140,13 +128,20 @@ for i = 0:1:5
 
 end
 
+spring_const = 0:k1_og:5*k1_og;
+
 figure;
 hold on;
-plot(0:k1_og:5*k1_og, U_Crit_k1);
+plot(spring_const, U_Crit_k1);
 xlabel('Spring Constant k_1 (N/m)');
 ylabel('Critical Speed (m/s)');
 title('Critical Speed Vs Spring Constant k_1');
 grid on;
+
+for i = 1:length(U_Crit_k1)
+    text(0 + (i-1)*k1_og, U_Crit_k1(i), num2str(double(U_Crit_k1(i))), 'VerticalAlignment', 'bottom', 'HorizontalAlignment', 'left');
+end
+
 hold off;
 
 % Spring Constant k2
@@ -177,16 +172,25 @@ for i = 0:1:5
 
 end
 
+spring_const = 0:k2_og:5*k2_og;
+
 figure;
 hold on;
-plot(0:k2_og:5*k2_og, U_Crit_k2);
+plot(spring_const, U_Crit_k2);
 xlabel('Spring Constant k_2 (N/m)');
 ylabel('Critical Speed (m/s)');
 title('Critical Speed Vs Spring Constant k_2');
+ax = gca;
+chart = ax.Children(1);
 grid on;
+
+for i = 1:length(U_Crit_k2)
+    text(0 + (i-1)*k2_og, U_Crit_k2(i), num2str(double(U_Crit_k2(i))), 'VerticalAlignment', 'bottom', 'HorizontalAlignment', 'left');
+end
+
 hold off;
 
-% Spring Constant k3
+% Spring Constant k theata
 U_Crit_ktheta = [];
 
 for i = 0:1:5
@@ -214,15 +218,21 @@ for i = 0:1:5
 
 end
 
+spring_const = 0:k_theta1_og:5*k_theta1_og;
+
 figure;
 hold on;
-plot(0:k_theta1_og:5*k_theta1_og, U_Crit_ktheta);
+plot(spring_const, U_Crit_ktheta);
 xlabel('Spring Constant k theta (N/m)');
 ylabel('Critical Speed (m/s)');
 title('Critical Speed Vs Spring Constant k theta');
 grid on;
-hold off;
 
+for i = 1:length(U_Crit_ktheta)
+    text(0 + (i-1)*k_theta1_og, U_Crit_ktheta(i), num2str(double(U_Crit_ktheta(i))), 'VerticalAlignment', 'bottom', 'HorizontalAlignment', 'left');
+end
+
+hold off;
 
 %% Question 5
 k1_vals = 1000:1000:9000;
@@ -310,6 +320,11 @@ xlabel('Point Mass Location (m)');
 ylabel('Critical Speed (m/s)');
 title('Critical Speed Vs Point Mass Location');
 grid on;
+
+for i = 1:length(U_Crit_xm)
+    text(0 + (i-1)*0.05, U_Crit_xm(i), num2str(double(U_Crit_xm(i))), 'VerticalAlignment', 'bottom', 'HorizontalAlignment', 'left');
+end
+
 hold off;
 
 
@@ -353,6 +368,11 @@ xlabel('Mechanical Damping c_2 (Ns/m)');
 ylabel('Critical Speed (m/s)');
 title('Critical Speed Vs Mechanical Damping c_2');
 grid on;
+
+for i = 1:2:length(U_Crit_c2)
+    text(0 + (i-1)*1, U_Crit_c2(i), num2str(double(U_Crit_c2(i))), 'VerticalAlignment', 'bottom', 'HorizontalAlignment', 'left');
+end
+
 hold off;
 
 % Mechanical Damping c_theta1
@@ -394,4 +414,9 @@ xlabel('Mechanical Damping c theta (Nms/rad)');
 ylabel('Critical Speed (m/s)');
 title('Critical Speed Vs Mechanical Damping c theta');
 grid on;
+
+for i = 1:2:length(U_Crit_ctheta1)
+    text(0 + (i-1)*0.035, U_Crit_ctheta1(i), num2str(double(U_Crit_ctheta1(i))), 'VerticalAlignment', 'bottom', 'HorizontalAlignment', 'left');
+end
+
 hold off;

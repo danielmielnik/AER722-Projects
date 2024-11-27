@@ -29,50 +29,38 @@ B_s = [c2, c2*(b/2); c2*(b/2), c2*(b/2)^2+c_theta1];
 %B_a = ((2*pi*q*S*c)/U)*[1, b/2; -b/2, 0];
 B_a = [1, b/2; -b/2, 0];
 B_bar_a = pi*rho*c*S*B_a;
-B_bar = B_s + U*B_bar_a
+B_bar = B_s + U*B_bar_a;
 
 E = [(k1+k2), k2*(b/2)-k1*b; k2*(b/2)-k1*b, k2*(b/2)^2+k1*b^2+k_theta1];
 
 %K = (2*pi*q*S*c)*[0, 1; 0, -b/2];
 K = [0, 1; 0, -b/2];
-Kb = pi*c*S*rho*K
-K_bar = pi*rho*S*Kb
+Kb = pi*c*S*rho*K;
+K_bar = pi*rho*S*Kb;
 
 J = [0, 0; 0, 0];
 
-A = [M, B_bar; J, M]
-C = [J, E+U^2*K_bar; -M, J]
+A = [M, B_bar; J, M];
+C = [J, E+U^2*K_bar; -M, J];
 
-Asub = double(subs(A, U, 100))
-Csub = double(subs(C, U, 100))
+Asub = double(subs(A, U, U_max));
+Csub = double(subs(C, U, U_max));
 
-eigenVal = eig(Csub, -Asub)
+eigenVal = eig(Csub, -Asub);
 
-%CharMatrix = [M(1,1)*lambda^2+U*B_bar(1,1)*lambda+E(1,1), M(1,2)*lambda^2+U*B_bar(1,2)*lambda+U^2*K(1,2); M(2,1)*lambda^2+U*B_bar(2,1)*lambda, M(2,2)*lambda^2+U*B_bar(2,2)*lambda+U^2*K_bar(2,2)+k_theta1]
-CharMatrix = [(M(1,1)*lambda^2+(B_s(1,1)+U*B_bar_a(1,1))*lambda+E(1,1)), (M(1,2)*lambda^2+(B_s(1,2)+U*B_bar_a(1,2))*lambda+E(1,2)+U^2*Kb(1,2)); (M(2,1)*lambda^2+(B_s(2,1)+U*B_bar_a(2,1))*lambda+E(2,1)), (M(2,2)*lambda^2+(B_s(2,2)+U*B_bar_a(2,2))*lambda+E(2,2)+U^2*Kb(2,2))]
+CharMatrix = [(M(1,1)*lambda^2+(B_s(1,1)+U*B_bar_a(1,1))*lambda+E(1,1)), (M(1,2)*lambda^2+(B_s(1,2)+U*B_bar_a(1,2))*lambda+E(1,2)+U^2*Kb(1,2)); (M(2,1)*lambda^2+(B_s(2,1)+U*B_bar_a(2,1))*lambda+E(2,1)), (M(2,2)*lambda^2+(B_s(2,2)+U*B_bar_a(2,2))*lambda+E(2,2)+U^2*Kb(2,2))];
+CharEqn = det(CharMatrix);
+eigCollect = collect(CharEqn, lambda);
 
-%syms Mv Ev B_sv B_av Kv B_bar_av K_bar_v [2 2]
-%Charmatr=[(Mv(1,1)*lambda^2+(B_sv(1,1)+U*B_bar_av(1,1))*lambda+Ev(1,1)), (Mv(1,2)*lambda^2+(B_sv(1,2)+U*B_bar_av(1,2))*lambda+Ev(1,2)+U^2*K_bar_v(1,2)); (Mv(2,1)*lambda^2+(B_sv(2,1)+U*B_bar_av(2,1))*lambda+Ev(2,1)), (Mv(2,2)*lambda^2+(B_sv(2,2)+U*B_bar_av(2,2))*lambda+Ev(2,2)+U^2*K_bar_v(2,2))]
-%CharMatrix=subs(Charmatr,[Mv(:,:),Ev(:,:), B_sv(:,:), B_av(:,:), Kv(:,:), B_bar_av(:,:), K_bar_v(:,:)], [M(:,:), E(:,:), B_s(:,:), B_a(:,:), K(:,:), B_a_bar(:,:), Kb(:,:)])
-
-CharEqn = det(CharMatrix)
-
-eigCollect = collect(CharEqn, lambda)
-
-%cf = fliplr(coeffs(eigCollect))
-
-%cf = coeffs(eigCollect)
-
-Cf = vpa(fliplr(coeffs((CharEqn),lambda)),4)
-
+Cf = vpa(fliplr(coeffs((CharEqn),lambda)),4);
 p0 = Cf(1);
 p1 = Cf(2);
 p2 = Cf(3);
 p3 = Cf(4);
 p4 = Cf(5);
 
-T3 = p1*p2*p3 - p1^2*p4 - p0*p3^2
-T3 = vpa(solve(T3==0,U),3)
+T3 = p1*p2*p3 - p1^2*p4 - p0*p3^2;
+T3 = vpa(solve(T3==0,U),3);
 
 U_Critical = vpa(min(T3(T3>0)), 5)
 
@@ -97,8 +85,8 @@ end
 % Plotting the results
 figure;
 hold on;
-plot(0:1:(1.2 * U_Critical), realParts, 'DisplayName', 'Real Parts');
-plot(0:1:(1.2 * U_Critical), imagParts, 'DisplayName', 'Imaginary Parts');
+plot(0:1:(1.2 * U_Critical), realParts);
+plot(0:1:(1.2 * U_Critical), imagParts);
 xlabel('Critical Speed (m/s)');
 ylabel('Eigenvalue Parts');
 title('Variation of Eigenvalues with Airspeed');
@@ -140,13 +128,20 @@ for i = 0:1:5
 
 end
 
+spring_const = 0:k1_og:5*k1_og;
+
 figure;
 hold on;
-plot(0:k1_og:5*k1_og, U_Crit_k1, 'DisplayName', 'Real Parts');
+plot(spring_const, U_Crit_k1);
 xlabel('Spring Constant k_1 (N/m)');
 ylabel('Critical Speed (m/s)');
 title('Critical Speed Vs Spring Constant k_1');
 grid on;
+
+for i = 1:length(U_Crit_k1)
+    text(0 + (i-1)*k1_og, U_Crit_k1(i), num2str(double(U_Crit_k1(i))), 'VerticalAlignment', 'bottom', 'HorizontalAlignment', 'left');
+end
+
 hold off;
 
 % Spring Constant k2
@@ -177,16 +172,25 @@ for i = 0:1:5
 
 end
 
+spring_const = 0:k2_og:5*k2_og;
+
 figure;
 hold on;
-plot(0:k2_og:5*k2_og, U_Crit_k2, 'DisplayName', 'Real Parts');
+plot(spring_const, U_Crit_k2);
 xlabel('Spring Constant k_2 (N/m)');
 ylabel('Critical Speed (m/s)');
 title('Critical Speed Vs Spring Constant k_2');
+ax = gca;
+chart = ax.Children(1);
 grid on;
+
+for i = 1:length(U_Crit_k2)
+    text(0 + (i-1)*k2_og, U_Crit_k2(i), num2str(double(U_Crit_k2(i))), 'VerticalAlignment', 'bottom', 'HorizontalAlignment', 'left');
+end
+
 hold off;
 
-% Spring Constant k3
+% Spring Constant k theata
 U_Crit_ktheta = [];
 
 for i = 0:1:5
@@ -214,15 +218,21 @@ for i = 0:1:5
 
 end
 
+spring_const = 0:k_theta1_og:5*k_theta1_og;
+
 figure;
 hold on;
-plot(0:k_theta1_og:5*k_theta1_og, U_Crit_ktheta, 'DisplayName', 'Real Parts');
-xlabel('Spring Constant k_theta (N/m)');
+plot(spring_const, U_Crit_ktheta);
+xlabel('Spring Constant k theta (N/m)');
 ylabel('Critical Speed (m/s)');
-title('Critical Speed Vs Spring Constant k_(theta)');
+title('Critical Speed Vs Spring Constant k theta');
 grid on;
-hold off;
 
+for i = 1:length(U_Crit_ktheta)
+    text(0 + (i-1)*k_theta1_og, U_Crit_ktheta(i), num2str(double(U_Crit_ktheta(i))), 'VerticalAlignment', 'bottom', 'HorizontalAlignment', 'left');
+end
+
+hold off;
 
 %% Question 5
 k1_vals = 1000:1000:9000;
@@ -310,13 +320,18 @@ xlabel('Point Mass Location (m)');
 ylabel('Critical Speed (m/s)');
 title('Critical Speed Vs Point Mass Location');
 grid on;
+
+for i = 1:length(U_Crit_xm)
+    text(0 + (i-1)*0.05, U_Crit_xm(i), num2str(double(U_Crit_xm(i))), 'VerticalAlignment', 'bottom', 'HorizontalAlignment', 'left');
+end
+
 hold off;
 
 
 %% Question 7
 x_m = 0.15;
 
-% Mechanical Damping C2
+% Mechanical Damping c2
 U_Crit_c2 = [];
 
 for i = 0:1:20
@@ -342,8 +357,6 @@ for i = 0:1:20
     T3 = p1*p2*p3 - p1^2*p4 - p0*p3^2;
     T3 = vpa(solve(T3==0,U),3);
 
-    vpa(min(T3(T3>0)), 5)
-
     U_Crit_c2 = [U_Crit_c2, vpa(min(T3(T3>0)), 5);];
 
 end
@@ -355,4 +368,55 @@ xlabel('Mechanical Damping c_2 (Ns/m)');
 ylabel('Critical Speed (m/s)');
 title('Critical Speed Vs Mechanical Damping c_2');
 grid on;
+
+for i = 1:length(U_Crit_c2)
+    text(0 + (i-1)*1, U_Crit_c2(i), num2str(double(U_Crit_c2(i))), 'VerticalAlignment', 'bottom', 'HorizontalAlignment', 'left');
+end
+
+hold off;
+
+% Mechanical Damping c_theta1
+c2 = 0;
+
+U_Crit_ctheta1 = [];
+
+for i = 0:0.035:0.7
+    c_theta1 = i;
+
+    M = [m+m1, m*(x_g-b)-m1*(b-x_m); m*(x_g-b)-m1*(b-x_m), m*(x_g-b)^2+m1*(b-x_m)^2+I_CG];
+    
+    E = [(k1+k2), k2*(b/2)-k1*b; k2*(b/2)-k1*b, k2*(b/2)^2+k1*b^2+k_theta1];
+    
+    B_s = [c2, c2*(b/2); c2*(b/2), c2*(b/2)^2+c_theta1];
+    B_bar = B_s + U*B_bar_a;
+    
+    CharMatrix = [(M(1,1)*lambda^2+(B_s(1,1)+U*B_bar_a(1,1))*lambda+E(1,1)), (M(1,2)*lambda^2+(B_s(1,2)+U*B_bar_a(1,2))*lambda+E(1,2)+U^2*Kb(1,2)); (M(2,1)*lambda^2+(B_s(2,1)+U*B_bar_a(2,1))*lambda+E(2,1)), (M(2,2)*lambda^2+(B_s(2,2)+U*B_bar_a(2,2))*lambda+E(2,2)+U^2*Kb(2,2))];
+    CharEqn = det(CharMatrix);
+
+    Cf = vpa(fliplr(coeffs((CharEqn),lambda)),4);
+    p0 = Cf(1);
+    p1 = Cf(2);
+    p2 = Cf(3);
+    p3 = Cf(4);
+    p4 = Cf(5);
+    
+    T3 = p1*p2*p3 - p1^2*p4 - p0*p3^2;
+    T3 = vpa(solve(T3==0,U),3);
+
+    U_Crit_ctheta1 = [U_Crit_ctheta1, vpa(min(T3(T3>0)), 5);];
+
+end
+
+figure;
+hold on;
+plot(0:0.035:0.7, U_Crit_ctheta1);
+xlabel('Mechanical Damping c theta (Nms/rad)');
+ylabel('Critical Speed (m/s)');
+title('Critical Speed Vs Mechanical Damping c theta');
+grid on;
+
+for i = 1:length(U_Crit_ctheta1)
+    text(0 + (i-1)*0.05, U_Crit_ctheta1(i), num2str(double(U_Crit_xm(i))), 'VerticalAlignment', 'bottom', 'HorizontalAlignment', 'left');
+end
+
 hold off;
