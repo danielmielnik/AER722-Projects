@@ -132,7 +132,7 @@ spring_const = 0:k1_og:5*k1_og;
 
 figure;
 hold on;
-plot(spring_const, U_Crit_k1);
+plot(spring_const, U_Crit_k1, '-*');
 xlabel('Spring Constant k_1 (N/m)');
 ylabel('Critical Speed (m/s)');
 title('Critical Speed Vs Spring Constant k_1');
@@ -176,7 +176,7 @@ spring_const = 0:k2_og:5*k2_og;
 
 figure;
 hold on;
-plot(spring_const, U_Crit_k2);
+plot(spring_const, U_Crit_k2, '-*');
 xlabel('Spring Constant k_2 (N/m)');
 ylabel('Critical Speed (m/s)');
 title('Critical Speed Vs Spring Constant k_2');
@@ -222,7 +222,7 @@ spring_const = 0:k_theta1_og:5*k_theta1_og;
 
 figure;
 hold on;
-plot(spring_const, U_Crit_ktheta);
+plot(spring_const, U_Crit_ktheta, '-*');
 xlabel('Spring Constant k theta (N/m)');
 ylabel('Critical Speed (m/s)');
 title('Critical Speed Vs Spring Constant k theta');
@@ -235,9 +235,9 @@ end
 hold off;
 
 %% Question 5
-k1_vals = 1000:1000:9000;
-k2_vals = 1000:1000:9000;
-k_theta1_vals = 0:100:700;
+k1_vals = 1000:500:9000;
+k2_vals = 1000:500:9000;
+k_theta1_vals = 0:50:700;
 
 U_max = 0;
 
@@ -315,7 +315,7 @@ end
 
 figure;
 hold on;
-plot(0.05:0.05:c, U_Crit_xm);
+plot(0.05:0.05:c, U_Crit_xm, '-*');
 xlabel('Point Mass Location (m)');
 ylabel('Critical Speed (m/s)');
 title('Critical Speed Vs Point Mass Location');
@@ -363,7 +363,7 @@ end
 
 figure;
 hold on;
-plot(0:1:20, U_Crit_c2);
+plot(0:1:20, U_Crit_c2, '-*');
 xlabel('Mechanical Damping c_2 (Ns/m)');
 ylabel('Critical Speed (m/s)');
 title('Critical Speed Vs Mechanical Damping c_2');
@@ -409,7 +409,7 @@ end
 
 figure;
 hold on;
-plot(0:0.035:0.7, U_Crit_ctheta1);
+plot(0:0.035:0.7, U_Crit_ctheta1, '-*');
 xlabel('Mechanical Damping c theta (Nms/rad)');
 ylabel('Critical Speed (m/s)');
 title('Critical Speed Vs Mechanical Damping c theta');
